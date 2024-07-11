@@ -413,25 +413,27 @@ public class TestIcebergInputFormats {
   }
 
   private String getUserFromWorkerPool(
-     UserGroupInformation user, Table table, ExecutorService workerpool) throws Exception {
+      UserGroupInformation user, Table table, ExecutorService workerpool) throws Exception {
     Method method =
         IcebergInputFormat.class.getDeclaredMethod(
             "planInputSplits", Table.class, Configuration.class, ExecutorService.class);
     method.setAccessible(true);
-    return user.doAs((PrivilegedAction<String>) () -> {
-      try {
-        method.invoke(Mockito.mock(IcebergInputFormat.class), table, conf, workerpool);
-        Future<String> submit = workerpool.submit(() -> {
-          return UserGroupInformation.getCurrentUser().getUserName();
-        });
-        while (!submit.isDone()) {
-          Thread.sleep(10);
-        }
-        return submit.get();
-      } catch (Exception e) {
-        throw new RuntimeException("Failed to getUserFromWorkerPool", e);
-      }
-    });
+    return user.doAs(
+        (PrivilegedAction<String>)
+            () -> {
+              try {
+                method.invoke(Mockito.mock(IcebergInputFormat.class), table, conf, workerpool);
+                Future<String> submit = workerpool.submit(() -> {
+                  return UserGroupInformation.getCurrentUser().getUserName();
+                });
+                while (!submit.isDone()) {
+                  Thread.sleep(10);
+                }
+                return submit.get();
+              } catch (Exception e) {
+                throw new RuntimeException("Failed to getUserFromWorkerPool", e);
+              }
+            });
   }
 
   // TODO - Capture template type T in toString method:
