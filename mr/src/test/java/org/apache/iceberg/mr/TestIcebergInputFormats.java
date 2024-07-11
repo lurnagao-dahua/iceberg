@@ -398,7 +398,7 @@ public class TestIcebergInputFormats {
         UserGroupInformation.createUserForTesting("user2", new String[] {});
     final ExecutorService workerPool1 = ThreadPools.newWorkerPool("iceberg-plan-worker-pool", 1);
     try {
-      // verify that different users use the same thread, and the thread will be used by the first user who uses it.
+      // different users still use the first ugi for execution
       assertThat(getUserFromWorkerPool(user1, table, workerPool1)).isEqualTo("user1");
       assertThat(getUserFromWorkerPool(user2, table, workerPool1)).isEqualTo("user1");
     } finally {
@@ -407,7 +407,7 @@ public class TestIcebergInputFormats {
 
     final ExecutorService workerPool2 = ThreadPools.newWorkerPool("iceberg-plan-worker-pool", 1);
     try {
-      // different threads use their respective users separately.
+      // using different ugi in different workerpool
       assertThat(getUserFromWorkerPool(user2, table, workerPool2)).isEqualTo("user2");
     } finally {
       workerPool2.shutdown();
