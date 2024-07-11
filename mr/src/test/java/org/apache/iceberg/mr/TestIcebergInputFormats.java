@@ -394,7 +394,7 @@ public class TestIcebergInputFormats {
     List<Record> records = helper.generateRandomRecords(1, 0L);
     helper.appendToTable(null, records);
     UserGroupInformation user1 =
-        UserGroupInformation.createUserForTesting("user1", new String[]{});
+        UserGroupInformation.createUserForTesting("user1", new String[] {});
     final ExecutorService workerPool1 = ThreadPools.newWorkerPool("iceberg-plan-worker-pool", 1);
     try {
       assertThat(getUserFromWorkerPool(user1, table, workerPool1)).isEqualTo("user1");
@@ -403,7 +403,7 @@ public class TestIcebergInputFormats {
     }
 
     UserGroupInformation user2 =
-        UserGroupInformation.createUserForTesting("user2", new String[]{});
+        UserGroupInformation.createUserForTesting("user2", new String[] {});
     final ExecutorService workerPool2 = ThreadPools.newWorkerPool("iceberg-plan-worker-pool", 1);
     try {
       assertThat(getUserFromWorkerPool(user2, table, workerPool2)).isEqualTo("user2");
@@ -423,9 +423,11 @@ public class TestIcebergInputFormats {
             () -> {
               try {
                 method.invoke(Mockito.mock(IcebergInputFormat.class), table, conf, workerpool);
-                Future<String> submit = workerpool.submit(() -> {
-                  return UserGroupInformation.getCurrentUser().getUserName();
-                });
+                Future<String> submit =
+                    workerpool.submit(
+                         () -> {
+                           return UserGroupInformation.getCurrentUser().getUserName();
+                         });
                 while (!submit.isDone()) {
                   Thread.sleep(10);
                 }
