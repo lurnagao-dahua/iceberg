@@ -425,9 +425,9 @@ public class TestIcebergInputFormats {
                 method.invoke(Mockito.mock(IcebergInputFormat.class), table, conf, workerpool);
                 Future<String> submit =
                     workerpool.submit(
-                         () -> {
-                           return UserGroupInformation.getCurrentUser().getUserName();
-                         });
+                        () -> {
+                          return UserGroupInformation.getCurrentUser().getUserName();
+                        });
                 while (!submit.isDone()) {
                   Thread.sleep(10);
                 }
