@@ -394,17 +394,20 @@ public class TestIcebergInputFormats {
     helper.appendToTable(null, records);
     UserGroupInformation user1 =
         UserGroupInformation.createUserForTesting("user1", new String[] {});
+    UserGroupInformation user2 =
+        UserGroupInformation.createUserForTesting("user2", new String[] {});
     final ExecutorService workerPool1 = ThreadPools.newWorkerPool("iceberg-plan-worker-pool", 1);
     try {
+      // verify that different users use the same thread, and the thread will be used by the first user who uses it.
       assertThat(getUserFromWorkerPool(user1, table, workerPool1)).isEqualTo("user1");
+      assertThat(getUserFromWorkerPool(user2, table, workerPool1)).isEqualTo("user1");
     } finally {
       workerPool1.shutdown();
     }
 
-    UserGroupInformation user2 =
-        UserGroupInformation.createUserForTesting("user2", new String[] {});
     final ExecutorService workerPool2 = ThreadPools.newWorkerPool("iceberg-plan-worker-pool", 1);
     try {
+      // different threads use their respective users separately.
       assertThat(getUserFromWorkerPool(user2, table, workerPool2)).isEqualTo("user2");
     } finally {
       workerPool2.shutdown();
