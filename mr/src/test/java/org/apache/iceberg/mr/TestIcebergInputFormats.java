@@ -425,10 +425,12 @@ public class TestIcebergInputFormats {
             () -> {
               try {
                 method.invoke(new IcebergInputFormat<>(), table, conf, workerpool);
-                return workerpool.submit(
-                    () -> {
-                      return UserGroupInformation.getCurrentUser().getUserName();
-                    }).get();
+                return workerpool.
+                     submit(
+                        () -> {
+                          return UserGroupInformation.getCurrentUser().getUserName();
+                        })
+                   .get();
               } catch (Exception e) {
                 throw new RuntimeException("Failed to get user from worker pool", e);
               }
