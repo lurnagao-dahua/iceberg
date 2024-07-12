@@ -389,8 +389,6 @@ public class TestIcebergInputFormats {
   @TestTemplate
   public void testWorkerPool() throws Exception {
     Table table = helper.createUnpartitionedTable();
-    List<Record> records = helper.generateRandomRecords(1, 0L);
-    helper.appendToTable(null, records);
     UserGroupInformation user1 =
         UserGroupInformation.createUserForTesting("user1", new String[] {});
     UserGroupInformation user2 =
