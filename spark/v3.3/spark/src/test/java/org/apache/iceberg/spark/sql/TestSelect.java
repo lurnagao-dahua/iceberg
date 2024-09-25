@@ -500,6 +500,7 @@ public class TestSelect extends SparkCatalogTestBase {
         sql("SELECT id, binary FROM %s where binary > X'11'", binaryTableName));
   }
 
+  // add test
   @Test
   public void testComplexTypeFilter() {
     String complexTypeTableName = tableName("complex_table");
